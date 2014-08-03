@@ -31,4 +31,4 @@ View structure
 each controller have a seperate view folder and generally each folder maintain main 3 files
 1. edit.php - which contain a form and uses in editing and updating
 2. index.php - which contatin a list of record 
-3. view.php - data view page
+3. view.php - data view page 
