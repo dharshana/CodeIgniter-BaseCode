@@ -43,7 +43,7 @@ class MY_Controller extends CI_Controller
         //set some options - we are passing in a useragent too here
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_URL => 'http://sms.openarc.lk/api.do?type=SMS:TEXT:INDIVIDUAL&action=SEND&priority=2&username=openlib&password=iaTeQTKFh7KD3FR&recipient=94-'.$phoneNumber.'&messagedata='.$smsCotent.'&signature=1',
+            CURLOPT_URL => 'http://sms.openarc.lk/api.do?type=SMS:TEXT:INDIVIDUAL&action=SEND&priority=2&username=USERNAME&password=PASSWORD&recipient=94-'.$phoneNumber.'&messagedata='.$smsCotent.'&signature=1',
             CURLOPT_USERAGENT => 'Openlib sysem massage'
         ));
         //send the request & save response to $resp
