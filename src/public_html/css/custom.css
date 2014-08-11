@@ -1,0 +1,18 @@
+.sortable table tbody {
+    border: 5px solid #951e20;
+    padding: 7px;
+    margin: 25px;
+    display: table-row-group;
+}
+.save_oder_btn_gp {
+    display: none;
+}
+.sortable .change_oder_btn {
+    display: none;
+}
+.sortable .save_oder_btn_gp {
+    display: inline-block;
+}
+table > tbody > tr.ui-sortable-helper {
+    background: #C5FFE1 !important;
+}
