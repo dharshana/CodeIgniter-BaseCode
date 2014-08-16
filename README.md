@@ -2,16 +2,19 @@ CodeIgniter - BaseCode
 ====================
 
 Requirements
+------------
 Apache 2+, PHP 5.3+, Database server (MySQL, Postgres or MsSQL)
 you must be familiyer with Codeigniter framework and depth knowledge in OOP will enhance your speed of development.
 
 Summery
+---------
 BaseCode has been develop to support and enhance the speed of the development in custom web applications and CMS's using Codeigniter framework
 
 basecode alredy coded all your crud operations and include lots of house keeping work.
 
 
 Basecode Design
+------------
 Controller structure
 Basecode being desing using two levels of controller classes
 level 1
