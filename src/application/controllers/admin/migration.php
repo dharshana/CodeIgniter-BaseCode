@@ -2,7 +2,7 @@
 /**
  * Migration controller
  *
- * Long description for class (if any)...
+ * Migration will work on calling to this controller
  * @author     Dharshana Jayamaha <me@geewantha.com>
  * @copyright  2013 Dharshana Jayamaha
  * @license    http://www.php.net/license/3_01.txt  PHP License 3.01

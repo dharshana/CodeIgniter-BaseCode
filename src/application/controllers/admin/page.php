@@ -4,14 +4,14 @@
  *
  * Long description for class (if any)...
  * @author     Dharshana Jayamaha <me@geewantha.com>
- * @copyright  2013 Dharshana Jayamaha
+ * @copyright  2014 Dharshana Jayamaha
  * @license    http://www.php.net/license/3_01.txt  PHP License 3.01
  * @version    Release: 1.0
  * @link       http://pear.php.net/package/PackageName
  * @since      Class available since Release 1.0.0
  */
 
-class Page extends Frontend_Controller
+class Page extends Admin_Controller
 {
     public function __construct()
     {
