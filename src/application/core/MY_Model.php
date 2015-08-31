@@ -1,10 +1,19 @@
 <?php
 /**
- * Short description for class
+ * -----------------------------IMPORTANT-------------------------------
+ * Programmer should NOT change or add any code without having a better
+ * understanding how MY_MODEL and Its methods been used
+ * ---------------------------------------------------------------------
  *
- * Long description for class (if any)...
- * @author     Dharshana Jayamaha <me@geewantha.com>
- * @copyright  2013 Dharshana Jayamaha
+ * My_Model will be used for all the CRUD operations in the system.
+ *
+ * All the other models should be extend form My_Model
+ * Most of the common operations been written in the My_Model so that
+ * programmer can easily call methods in My_Model Class for all most
+ * all Database Communication and minimize the coding in their projects.
+ *
+ * @author     Dharshana Jayamaha <dharshana@openarc.lk>
+ * @copyright  2013 RAD Team - OpenArc
  * @license    http://www.php.net/license/3_01.txt  PHP License 3.01
  * @version    Release: 1.0
  * @link       http://pear.php.net/package/PackageName
@@ -24,6 +33,22 @@ class MY_Model extends CI_Model
         parent::__construct();
     }
 
+    /**
+     * Purpose of the function is to reduce the code and minimize the error which counld occer
+     * during the getting the form data using POST method.
+     * in complex form when dealing with large amount of input programmer just need to send an
+     * array of the form field list and then this function return all form data inputs as data array,
+     * array key as the form input name and value as the form input value
+     * example return:
+     *        array(
+     *         'first_name' => 'Dharshana',
+     *         'last_name' => 'Jayamaha'
+     *        );
+     *
+     * @param  Array      $fields    list of Form feilds name.
+     * @throws Some_Exception_Class If something interesting cannot happen
+     * @return array result set
+     */
     public function array_from_post($fields)
     {
         $data = array();
@@ -35,41 +60,108 @@ class MY_Model extends CI_Model
     }
 
     /**
+     * Purpose of the function is to enable pagination inbuild for the programmer so that Programming could be more rapid.
+     *
+     * @param  Integer      $perPage    number of records per page, default set to 20
+     * @param  Integer      $pageNumber current page number, default set to '0'
+     * @param  Array Obj    $where      if additional query required that can be provided with this parameter, by default set to NULL
+     * @param  Text         $AsOrder    ordering the result, default set to 'Assending'
+     * @throws Some_Exception_Class If something interesting cannot happen
+     * @return result set as an Array()
+     */
+    public function pagination($perPage=20, $pageNumber=0, $where=NULL, $AsOrder = "asc")
+    {
+        if($where==NULL)
+        {
+            return $this->get($id = NULL, $single = NULL, $AsOrder, $perPage, $pageNumber);
+        }
+        else
+        {
+            $this->db->where($where, NULL);
+            return $this->get(NULL, NULL, $AsOrder, $perPage, $pageNumber);
+        }
+
+    }
+
+    /**
+     * Purpose of the function is to return a result set to used in the dropdown list.
+     * array key will be the table ID , value will be the $field
+     * example return:
+     *          array(
+     *              '1' => 'Sri Lanka',
+     *              '2' => 'United Kingdon'
+     *          );
+     *
+     * @param  Text         $field    feild name of the databse which reqired to be displayed in the value section in dropdown list.
+     * @param  STDObject    $query    if additional query required it should be provided as STDObject example Array('country_name)'=>'Sri Lanka')
+     * @throws Some_Exception_Class If something interesting cannot happen
+     * @return set of array which suite to use in dropdown boxs' dataset.
+     */
+    public function dropdown_list($field, $emptySelect='Please Select', $query=null)
+    {
+        if($query==null){
+            $records = $this->get();
+        }else{
+            $records = $this->get_by($query);
+        }
+
+        // setting the dropdown list array
+        $fields_set = array(''=>$emptySelect);
+        // $fields_set = array(''=>''); // default/empty value
+        // adding each result row to dropdown lisst array
+        if(count($records)){
+            foreach($records as $record){
+                $fields_set[$record->id] = $record->$field;
+            }
+        }
+        // reurn dropdown result set array
+        return $fields_set;
+    }
+
+    /**
      * Purpose of the function is to return a specific record if '$id' is set which is the table primary key,
      * or return all records in specific table.
      * this function also used by the 'get_by' methods which will return single result as a row or
      * lines of result as a result set.
      *
-     * @param  Integer  $id     ID of the table row which is looking for
-     * @param  Boolean  $single construct to help get_by method, If 'TRUE' meaning return single row, ELSE return result set
+     * @param  Integer  $id             ID of the table row which is looking for
+     * @param  Boolean  $single         construct to help get_by method, If 'TRUE' meaning return single row, ELSE return result set array
+     * @param  Text     $AsOrder        record set order, default set to 'Assending'
+     * @param  Integer  $limit          Number of records limit, default set to NULL
+     * @param  Integer  $pageNumber     page number *** this uses only in the pagination function is executed.***
      * @throws Some_Exception_Class If something interesting cannot happen
      * @return row / all rows in the specific table
      */
-    public function get($id = NULL, $single = NULL)
+    public function get($id = NULL, $single = NULL, $AsOrder = "asc", $limit= NULL, $pageNumber=0)
     {
-    	if ($id != NULL)
+        if ($id != NULL)
         {
-    		$filter = $this->_primary_filter;
-    		$id = $filter($id);  // Added Security
-    		$this->db->where($this->_primary_key, $id);
-    		$method = 'row'; // single record
-    	}
+            $filter = $this->_primary_filter;
+            $id = $filter($id);  // Added Security
+            $this->db->where($this->_primary_key, $id);
+            $method = 'row'; // single record
+        }
         elseif($single == TRUE)
         {
-    		$method = 'row'; // single record
-    	}
+            $method = 'row'; // single record
+        }
         else
         {
-    		$method = 'result'; // all record
-    	}
+            $method = 'result'; // all record
+        }
 
-    	// if not order set in the out-side
-    	if (!count($this->db->ar_orderby))
+        if (!$this->db->ar_orderby)
         {
-    	    $this->db->order_by($this->_order_by); // order the result
-    	} 
-    	// return as row or result set according to value of $single
-    	return $this->db->get($this->_table_name)->$method();
+            $this->db->order_by($this->_order_by,$AsOrder);
+        }
+
+        if(!$limit==NULL)
+        {
+            $this->db->limit($limit,$pageNumber);
+        }
+
+        // return as row or result set according to value of $single
+        return $this->db->get($this->_table_name)->$method();
     }
 
     /**
@@ -81,33 +173,33 @@ class MY_Model extends CI_Model
      * @param  Boolean  $single construct to help get_by method, If 'TRUE' meaning return single row, ELSE return result set
      * @return row / all rows in the specific table
      */
-    public function get_by($where, $single = FALSE)
+    public function get_by($where, $single = FALSE, $AsOrder = "asc", $limit= NULL, $pageNumber=0)
     {
-    	$this->db->where($where);
-    	return $this->get(NULL, $single);
+        $this->db->where($where);
+        return $this->get(NULL, $single, $AsOrder, $limit, $pageNumber);
     }
 
     /**
      * Both 'SAVE' and 'INSERT' operations been handled from this function.
      * logic behind is, if $id is set then it will UPDATE and if '$id' set to NULL it will INSERT
      *
-     * @param  STDobject  $data Array() of data.
-     * @param  Integer    $id   Page ID
+     * @param  Array()  $data Array() of data.
+     * @param  Integer  $id   Page ID
      * @return id value of the updated/inserted row
      */
     public function save($data, $id = NULL)
     {
-    	//if timestamp is TRUE, set Timestamp
-    	if($this->_timestamps == TRUE)
+        //if timestamp is TRUE, set Timestamp
+        if($this->_timestamps == TRUE)
         {
-    		$now = date('Y-m-d H:i:s');
-    		$id || $data['created'] = $now; // if ID is set leave, else set $data['created'] = $now
-    		$data['modified'] = $now;
-    	}
+            $now = date('Y-m-d H:i:s');
+            $id || $data['created'] = $now; // if ID is set leave, else set $data['created'] = $now
+            $data['modified'] = $now;
+        }
         //insert
         if($id === NULL)
         {
-        	!isset($data[$this->_primary_key]) || $data[$this->_primary_key] = NULL;
+            !isset($data[$this->_primary_key]) || $data[$this->_primary_key] = NULL;
             $this->db->set($data);
             $this->db->insert($this->_table_name);
             $id = $this->db->insert_id(); // fetch the ID of the newly inserted row
@@ -115,27 +207,57 @@ class MY_Model extends CI_Model
         //update
         else
         {
-        	$filter = $this->_primary_filter;
-        	$id = $filter($id);
-        	$this->db->set($data);
-        	$this->db->where($this->_primary_key, $id);
+            $filter = $this->_primary_filter; // filer the primary key
+            $id = $filter($id); // filer the primary key
+            $this->db->set($data);
+            $this->db->where($this->_primary_key, $id);
             $this->db->update($this->_table_name);
         }
         return $id;
     }
 
+    /**
+     * delete record by table primary key
+     *
+     * @param  Integer  $id   primary key of the table
+     * @return false if $id is not set and otherwise NO returns
+     */
     public function delete($id)
     {
-    	$filter = $this->_primary_filter;
+        $filter = $this->_primary_filter;
         $id = $filter($id);
 
         if (!$id)
         {
-        	return FALSE;
+            return FALSE;
         }
         $this->db->where($this->_primary_key, $id);
         $this->db->limit(1);
         $this->db->delete($this->_table_name);
+    }
+
+    /**
+     * purpose of this function is to return a record set with NOT EQUAL condition
+     * example:
+     * get students who are not in Colombo District.
+     * $this->student_m->get_by_not('district','colombo');
+     *
+     * @param  String  $field    database field name
+     * @param  String  $values   value which should be check with database column
+     * @param  Boolean $single   if TRUE return single ROW and FALSE will return record set Array()
+     * @return false if $id is not set and otherwise NO returns
+     */
+    public function get_by_not($field, $values,$single = FALSE){
+        $this->db->where_not_in($field,$values);
+        return $this->get(NULL,$single);
+    }
+
+    public function get_max($field, $where=NULL){
+        $this->db->select_max($field);
+        if($where != NULL){
+            $this->db->where($where);
+        }
+        return $this->db->get($this->_table_name)->row();
     }
 
 }

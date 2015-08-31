@@ -24,7 +24,7 @@ date_default_timezone_set('Asia/Dhaka');
 //switch()
 
     switch(dirname(__FILE__)){
-        case 'C:\xampp\htdocs\Raindraft\mainfraimwork\public_html':
+        case 'C:\xampp\htdocs\openarc-rad\mainfraimwork\source_1.3\public_html':
             define('ENVIRONMENT', 'development');
         break;
 

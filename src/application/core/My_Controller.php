@@ -12,14 +12,8 @@
  * programmer can easily call methods in My_Model Class for all most
  * all Database Communication and minimize the coding in their projects.
  *
-<<<<<<< HEAD
- * Long description for class (if any)...
- * @author     Dharshana Jayamaha <me@geewantha.com>
- * @copyright  2013 Dharshana Jayamaha
-=======
  * @author     Dharshana Jayamaha <dharshana@openarc.lk>
  * @copyright  2013 RAD Team - OpenArc
->>>>>>> origin/master
  * @license    http://www.php.net/license/3_01.txt  PHP License 3.01
  * @version    Release: 1.0
  * @link       http://pear.php.net/package/PackageName
@@ -49,7 +43,7 @@ class MY_Controller extends CI_Controller
         //set some options - we are passing in a useragent too here
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_URL => 'http://sms.openarc.lk/api.do?type=SMS:TEXT:INDIVIDUAL&action=SEND&priority=2&username=USERNAME&password=PASSWORD&recipient=94-'.$phoneNumber.'&messagedata='.$smsCotent.'&signature=1',
+            CURLOPT_URL => 'http://sms.openarc.lk/api.do?type=SMS:TEXT:INDIVIDUAL&action=SEND&priority=2&username=openlib&password=iaTeQTKFh7KD3FR&recipient=94-'.$phoneNumber.'&messagedata='.$smsCotent.'&signature=1',
             CURLOPT_USERAGENT => 'Openlib sysem massage'
         ));
         //send the request & save response to $resp
