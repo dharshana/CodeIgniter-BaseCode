@@ -86,7 +86,7 @@ class Page extends Admin_Controller
 
         // process the form
         if($this->form_validation->run() == TRUE){
-            $data = $this->page_m->array_from_post(array('parent_id','title','slug','order','body','meta_keywords','meta_description'));
+            $data = $this->page_m->array_from_post(array('parent_id','title','slug','order_column','body','meta_keywords','meta_description'));
             //$data['password'] = $this->user_m->hash($data['password']);
             $this->page_m->save($data,$id);
             redirect('admin/page');
