@@ -23,7 +23,7 @@ class Welcome extends Frontend_Controller {
 	}
 
     public function fn1(){
-        echo 'this is from function1';
+        echo 'this is from function2';
     }
 }
 
